@@ -1,89 +1,31 @@
 // create web server
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var fs = require('fs');
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(express.static(__dirname + '/public')); // set static path
-app.set('view engine', 'ejs'); // set view engine
-app.set('views', './views'); // set views path
+// run: node comments.js
+// test: curl -i http://localhost:3000/comments
 
-// create server
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var http = require('http');
+var url = require('url');
+var items = [];
+
+var server = http.createServer(function(req, res){
+  switch(req.method){
+    case 'POST':
+      var item = '';
+      req.setEncoding('utf8');
+      req.on('data', function(chunk){
+        item += chunk;
+      });
+      req.on('end', function(){
+        items.push(item);
+        res.end('OK\n');
+      });
+      break;
+    case 'GET':
+      items.forEach(function(item, i){
+        res.write(i + ') ' + item + '\n');
+      });
+      res.end();
+      break;
+  }
+});
+
 server.listen(3000);
-
-// create socket
-io.on('connection', function(socket) {
-    console.log('co nguoi ket noi ' + socket.id);
-
-    // user send a comment
-    socket.on('CLIENT_SEND_COMMENT', function(data) {
-        console.log(data);
-        io.sockets.emit('SERVER_SEND_COMMENT', data);
-    });
-
-    // user send a comment
-    socket.on('CLIENT_SEND_COMMENT_REPLY', function(data) {
-        console.log(data);
-        io.sockets.emit('SERVER_SEND_COMMENT_REPLY', data);
-    });
-
-    // user send a comment
-    socket.on('CLIENT_SEND_COMMENT_REPLY_REPLY', function(data) {
-        console.log(data);
-        io.sockets.emit('SERVER_SEND_COMMENT_REPLY_REPLY', data);
-    });
-});
-
-// render home page
-app.get('/', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-
-// render home page
-app.get('/home', function(req, res) {
-    res.render('home');
-});
-// test
